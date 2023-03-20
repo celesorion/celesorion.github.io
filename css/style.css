@@ -2,3 +2,18 @@ body {
     text-align: center;
     align-items: center;
 }
+
+#progress {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#progress td:nth-child(1) {
+    text-align: right;
+    align-items: center;
+}
+
+#progress td:nth-child(2) {
+    text-align: left;
+    align-items: center;
+}
