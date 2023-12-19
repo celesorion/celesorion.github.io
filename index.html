@@ -2,41 +2,70 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="/css/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="CelesOrion">
-    <meta name="description" content="CelesOrion's Home Page">
-    <title>CelesOrion's Home Page</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="CelesOrion">
+  <meta name="description" content="CelesOrion's Home Page">
+  <title>CelesOrion's Home Page</title>
 </head>
 
 <body>
-    <header>
-        <h1><a href="https://elesios.com">[ CelesOrion's Home Page ]</a></h1>
-    </header>
-    <hr>
-    <table id="progress">
-        <tr>
-            <td>
-                <p>Project Euler (60/150):</p>
-            </td>
-            <td><progress value="53" max="150"></progress></td>
-        </tr>
-        <tr>
-            <td>
-                <p>Read Papers (0/20):</p>
-            </td>
-            <td><progress value="0" max="20"></progress></td>
-        </tr>
-    </table>
-    <hr>
-    <footer>
-        <p>&copy;2023 CelesOrion</p>
-        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License"
-                style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work
-        is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons
-            Attribution-ShareAlike 4.0 International License</a>.
-    </footer>
+  <header>
+    <h1><a href="https://elesios.com">[ CelesOrion's Home Page ]</a></h1>
+  </header>
+  <hr>
+  
+  <h2>A list of helpful papers (with my reading notes)</h2>
+  <dl>
+    <dt>A Unified Theory of Garbage Collection</dt>
+    <dd>
+      <p>
+      I found this paper especially illuminating when you have seen too many debates on reference counting and so-called "garbage collection".
+      It provides a unified view that the reference counting and tracing approaches are duals of each other.
+      And the efforts to improve one of them will drive it to approximate the other.
+      Here are some interesting points:
+      </p>
+      <ul>
+      <li>
+        In the fix-point formulation described in the paper, there might be multiple fix-points of an object graph with cycles.
+        E.g. <code>[a->b, b->a]</code> have 2 fix-points, <code>[rc(a)=0, rc(b)=0]</code> and <code>[rc(a)=1, rc(b)=1]</code>.
+        The tracing gradually approaches the former while the RC approaches the latter. Unfortunately, in this case, the former <i>least fix-point</i>,
+        is what we actually want to reach (i.e. both objects are dead).
+      </li>
+      <li>(Classic) reference counting has an incremental nature while sacrificing the throughput due to the immediate update of counters.</li>
+      <li>
+        To make tracing incremental, it's common to use <i>read & write barriers</i>, 
+        which are essentially the same operation with the increase and decrease of counters when doing assignments in a typical RC approach.
+      </li>
+      <li>
+        Most hybrid GC approaches can be sketched by showing which method in the dual is used to manage the references of different kinds.
+        E.g. from roots to heap objects, heap objects to heap objects, heaps objects to another heap objects (when there are multiple heaps).
+      </li>
+      </ul>
+    </dd>
+    <dt>Compiling without Continuations</dt>
+    <dd>
+      <p>
+        It's happy to see another unification in intermediate representation (IR) used by compilers.
+        It has been a long time for the imperative language camp to use IR in SSA form in their compilers.
+        But for the functional language camp, there's still a folklore of CPS IR.
+        Though proved to be equivalent to SSA form, the CPS IR still remains the problem of being totally unreadable for humans.
+        In this paper, I'm pleased to see the de facto standard compiler of Haskell used a direct style IR, extending lambda calculus in A-normal form with <i>join points</i>.
+        It gives a closer correspondence between these two kinds of IR.
+        Basically, the join points can be regarded the counterparts of basic blocks (with parameters) in the SSA form, and the functions are just functions.
+        Of course, due to the different attitudes towards high-order functions, data types, etc. in the two camps, the concrete compilation process and focus are still not very similar.
+      </p>
+    </dd>
+  </dl>
+  <hr>
+  <footer>
+    <p>&copy;2023 CelesOrion</p>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License"
+        style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"/></a><br/>This work
+    is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons
+      Attribution-ShareAlike 4.0 International License</a>.
+  </footer>
 </body>
 
 </html>

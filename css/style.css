@@ -1,19 +1,22 @@
 body {
-    text-align: center;
-    align-items: center;
+  text-align: center;
+  align-items: center;
 }
 
-#progress {
-    margin-left: auto;
-    margin-right: auto;
+dl {
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#progress td:nth-child(1) {
-    text-align: right;
-    align-items: center;
+dt {
+  font-weight: bold;
 }
 
-#progress td:nth-child(2) {
-    text-align: left;
-    align-items: center;
+dd {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+ul {
+  margin-top: -0.9rem;
 }
