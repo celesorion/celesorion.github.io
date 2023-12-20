@@ -35,11 +35,36 @@
   <h3>Random Details of Implementation</h3>
   <h4>The Interpreter</h4>
 
-  <p><i>To be continued ...</i></p>
+  <p>
+    Currently, we have an interpreter to execute the compiled bytecode of QuicKaml.
+    It might be well-known that there are some technique issues to write a fast interpreter in pure standard C.
+    For example, register allocation is usually bad in a large function with many hot/cold paths
+    (<a href="http://lua-users.org/lists/lua-l/2011-02/msg00742.html">suggested by Mike Pall</a>).
+
+    My interpreter used the same trick described <a href="https://blog.reverberate.org/2021/04/21/musttail-efficient-interpreters.html">here</a> to solve this problem.
+
+    The basic idea is that we should split the interpreting code of bytecode into multiple functions,
+    instead of a large interpreter loop (usually written in switch or <a href="https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html">computed goto</a>).
+
+    The difference between this approach and <a href="https://en.wikipedia.org/wiki/Threaded_code#Subroutine_threading">subroutine threading</a> is that
+    we do instruction dispatch using tail calls guaranteed by "musttail" attribute, which are optimized by the compiler to jumps.
+  
+    So we can save the time of function call and return.
+
+    I think the main benefit comes from that now we have a "macro function" of which each "macro basic block" (which is actually a function)
+    has its own context for register allocation and branch re-ordering,
+    and intra-BB arguments are passed through a common interface decided by the calling convention.
+
+    The only thing I can optimize further is to give the existing compiler a better calling convention (for our interpreter).
+    I added a new calling convention to pass arguments in registers as many as possible in a branch of LLVM.
+    I never wished such a change would be accepted by the upstream.
+    A workaround is to use a custom LLVM build to compile the interpreter code into the assembly before distributing the source code.
+    Later we can use the normal compiler to link it against other parts.
+  </p>
   
   <h3>Source Code</h3>
   <p>
-    The source code is hosted on <a href="https://github.com/celesorion/quickaml">Github</a>.
+    The source code is on <a href="https://github.com/celesorion/quickaml">Github</a>.
   </p>
 
   <hr>
